@@ -22,18 +22,18 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
 
-        List<UserMealWithExcess> mealsTo = filteredByCycles(meals, LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), LocalDateTime.of(2020, Month.JANUARY, 31, 21, 0), 2000);
+        List<UserMealWithExcess> mealsTo = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
 
 //        System.out.println(filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
     }
 
-    public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalDateTime startTime, LocalDateTime endTime, int caloriesPerDay) {
+    public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         List<UserMealWithExcess> result = new ArrayList<>();
         int periodCalories = 0;
         boolean excess = false;
         for (UserMeal food : meals) {
-            if (TimeUtil.isBetweenHalfOpen(food.getDateTime(), startTime, endTime)) {
+            if (TimeUtil.isBetweenHalfOpen(food.getDateTime().toLocalTime(), startTime, endTime)) {
                 periodCalories = periodCalories + food.getCalories();
                 if (periodCalories > caloriesPerDay) {
                     excess = true;
@@ -41,7 +41,7 @@ public class UserMealsUtil {
             }
         }
         for (UserMeal food : meals) {
-            if (TimeUtil.isBetweenHalfOpen(food.getDateTime(), startTime, endTime)) {
+            if (TimeUtil.isBetweenHalfOpen(food.getDateTime().toLocalTime(), startTime, endTime)) {
                 result.add(new UserMealWithExcess(food.getDateTime(), food.getDescription(), food.getCalories(), excess));
             }
         }
